@@ -39,6 +39,7 @@ def main():
     avg = 1
     for size in range(3,12):
         runtime = 0
+        cost_total = 0
         for iteration in range(0, avg):
             begin = time.time()
             cities = read_data(size)
@@ -47,11 +48,12 @@ def main():
             print(f"Path cost for graph of size {size}: {path_cost}; Time taken : {end - begin}")
             display(cities, size)
             runtime += end - begin
-        runtime_dict[size] = runtime/avg
-    # df = pd.DataFrame(runtime_dict.items()) 
-    # writer = pd.ExcelWriter(f'output/naive_runtime.xlsx')
-    # df.to_excel(writer, f'runtime_naive')
-    # writer.save()
+            cost_total += path_cost
+        runtime_dict[size] = str(runtime/avg) + "   " + str(cost_total/avg)
+    df = pd.DataFrame(runtime_dict.items()) 
+    writer = pd.ExcelWriter(f'output/naive_runtime.xlsx')
+    df.to_excel(writer, f'runtime_naive')
+    writer.save()
 
 if __name__ == "__main__":
     main()
