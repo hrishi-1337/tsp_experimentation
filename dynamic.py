@@ -21,9 +21,11 @@ def solve(cities):
         for cities_set in [frozenset(C) | {0} for C in itertools.combinations(range(1, len(cities)), m)]:
             for j in cities_set - {0}:
                 temp_matrix[(cities_set, j)] = min([(route_matrix[(cities_set - {j}, k)][0] + distance_matrix[k][j], 
-                route_matrix[(cities_set - {j}, k)][1] + [j]) for k in cities_set if k != 0 and k != j])
+                                                route_matrix[(cities_set - {j}, k)][1] + [j])
+                                                for k in cities_set if k != 0 and k != j])
         route_matrix = temp_matrix  
     res = min([(route_matrix[d][0] + distance_matrix[0][d[1]], route_matrix[d][1]) for d in iter(route_matrix)])
+    print(res)
     route = [cities[i] for i in res[1]]
     return route
 
@@ -45,23 +47,25 @@ def display(cities, size):
 def main():
     runtime_dict = {}
     avg = 1
-    for size in range(11,12):
+    sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    for size in sizes:
         runtime = 0
         cost_total = 0
         for iteration in range(0, avg):
             begin = time.time()
             cities = read_data(size)
             route = solve(cities)
+            print(route)
             end = time.time()
             print(f"Path cost for graph of size {size}: {cost(route)}; Time taken : {end - begin}")
-            # display(cities, size)
+            display(route, size)
             runtime += end - begin
             cost_total += cost(route)
         runtime_dict[size] = str(runtime/avg) + "   " + str(cost_total/avg)
-    # df = pd.DataFrame(runtime_dict.items()) 
-    # writer = pd.ExcelWriter(f'output/dynamic__runtime.xlsx')
-    # df.to_excel(writer, f'dynamic_runtime')
-    # writer.save()
+    df = pd.DataFrame(runtime_dict.items()) 
+    writer = pd.ExcelWriter(f'output/dynamic__runtime.xlsx')
+    df.to_excel(writer, f'dynamic_runtime')
+    writer.save()
 
 if __name__ == "__main__":
     main()

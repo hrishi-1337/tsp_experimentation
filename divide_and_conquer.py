@@ -73,38 +73,40 @@ def display(cities, size):
     fig = plt.figure()
     fig.suptitle("Divide & Conquer TSP")
     x_list, y_list = [], []
-    for city in cities:
-        x_list.append(city.x)
-        y_list.append(city.y)
-    x_list.append(cities[0].x)
-    y_list.append(cities[0].y)
-
+    for city1, city2 in cities:
+        x_list.append(city1.x)
+        x_list.append(city2.x)
+        y_list.append(city1.y)
+        y_list.append(city2.y)
+        plt.plot([city1.x, city2.x], [city1.y, city2.y], 'g')
     plt.plot(x_list, y_list, 'ro')
-    plt.plot(x_list, y_list, 'g')
-    plt.savefig(f'images/dynamic_{size}.png')
+    plt.savefig(f'images/dnc_{size}.png')
     plt.show(block=True)
 
 def main():
     runtime_dict = {}
     avg = 1
-    for size in range(11,12):
+    sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 128, 256, 512]
+    # sizes = [32]
+    for size in sizes:
         runtime = 0
         cost_total = 0
         for iteration in range(0, avg):
             begin = time.time()
             cities = read_data(size)
             route = solve(cities)
+            print(route)
             path_cost = sum([edge[0].distance(edge[1]) for edge in route])
             end = time.time()
             print(f"Path cost for graph of size {size}: {path_cost}; Time taken : {end - begin}")
-            display(cities, size)
+            display(route, size)
             runtime += end - begin
             cost_total += path_cost
         runtime_dict[size] = str(runtime/avg) + "   " + str(cost_total/avg)
-    # df = pd.DataFrame(runtime_dict.items()) 
-    # writer = pd.ExcelWriter(f'output/dnc__runtime.xlsx')
-    # df.to_excel(writer, f'dnc_runtime')
-    # writer.save()
+    df = pd.DataFrame(runtime_dict.items()) 
+    writer = pd.ExcelWriter(f'output/dnc__runtime.xlsx')
+    df.to_excel(writer, f'dnc_runtime')
+    writer.save()
 
 if __name__ == "__main__":
     main()

@@ -15,7 +15,7 @@ def read_data(size):
 
 def solve(cities):
     cities = min(itertools.permutations(cities), key=lambda path: cost(path))
-    return cost(cities)
+    return cities
 
 
 def display(cities, size):
@@ -43,12 +43,12 @@ def main():
         for iteration in range(0, avg):
             begin = time.time()
             cities = read_data(size)
-            path_cost = solve(cities)
+            path = solve(cities)
             end = time.time()
-            print(f"Path cost for graph of size {size}: {path_cost}; Time taken : {end - begin}")
-            display(cities, size)
+            print(f"Path cost for graph of size {size}: {cost(path)}; Time taken : {end - begin}")
+            display(path, size)
             runtime += end - begin
-            cost_total += path_cost
+            cost_total += cost(path)
         runtime_dict[size] = str(runtime/avg) + "   " + str(cost_total/avg)
     df = pd.DataFrame(runtime_dict.items()) 
     writer = pd.ExcelWriter(f'output/naive_runtime.xlsx')
