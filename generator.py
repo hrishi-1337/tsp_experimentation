@@ -25,5 +25,5 @@ def cost(route):
     return sum([city.distance(route[index - 1]) for index, city in enumerate(route)])
 
 if __name__ == "__main__":
-    for i in range(20, 21):
+    for i in range(2048, 2049):
         generate_data(i)

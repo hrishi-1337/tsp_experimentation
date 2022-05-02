@@ -85,8 +85,8 @@ def display(cities, size):
 
 def main():
     runtime_dict = {}
-    avg = 1
-    sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 128, 256, 512]
+    avg = 5
+    sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 32, 64, 128, 256, 512, 1024, 2048]
     # sizes = [32]
     for size in sizes:
         runtime = 0
@@ -99,7 +99,7 @@ def main():
             path_cost = sum([edge[0].distance(edge[1]) for edge in route])
             end = time.time()
             print(f"Path cost for graph of size {size}: {path_cost}; Time taken : {end - begin}")
-            display(route, size)
+            # display(route, size)
             runtime += end - begin
             cost_total += path_cost
         runtime_dict[size] = str(runtime/avg) + "   " + str(cost_total/avg)

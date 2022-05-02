@@ -38,9 +38,9 @@ def display(cities, size):
 
 def main():
     runtime_dict = {}
-    avg = 1
-    # sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 128, 256, 512]
-    sizes = [32]
+    avg = 5
+    sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 32, 64, 128, 256, 512, 1024, 2048]
+    # sizes = [32]
     for size in sizes:
         runtime = 0
         cost_total = 0
@@ -55,10 +55,10 @@ def main():
             runtime += end - begin
             cost_total += cost(route)
         runtime_dict[size] = str(runtime/avg) + "   " + str(cost_total/avg)
-    # df = pd.DataFrame(runtime_dict.items()) 
-    # writer = pd.ExcelWriter(f'output/greedy_runtime.xlsx')
-    # df.to_excel(writer, f'greedy_runtime')
-    # writer.save()
+    df = pd.DataFrame(runtime_dict.items()) 
+    writer = pd.ExcelWriter(f'output/greedy_runtime.xlsx')
+    df.to_excel(writer, f'greedy_runtime')
+    writer.save()
 
 if __name__ == "__main__":
     main()
