@@ -14,12 +14,12 @@ def read_data(size):
 
 def solve(cities):
     unvisited = cities[1:]
-    route = [cities[0]]
+    path = [cities[0]]
     while len(unvisited):
-        index, nearest_city = min(enumerate(unvisited),key=lambda item: item[1].distance(route[-1]))
-        route.append(nearest_city)
+        index, closest_city = min(enumerate(unvisited),key=lambda city: city[1].distance(path[-1]))
+        path.append(closest_city)
         del unvisited[index]
-    return route
+    return path
 
 def display(cities, size):
     fig = plt.figure()

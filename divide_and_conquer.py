@@ -1,4 +1,3 @@
-import itertools
 import math
 import time
 import pandas as pd
@@ -15,60 +14,58 @@ def read_data(size):
     return cities
 
 
-def split_longer_dim(cities):
-    cities_by_x = sorted(cities, key=lambda city: city.x)
-    cities_by_y = sorted(cities, key=lambda city: city.y)
-    middle_length = len(cities_by_x) // 2
-    if abs(cities_by_x[0].x - cities_by_x[-1].x) > abs(cities_by_y[0].y - cities_by_y[-1].y):
-        return cities_by_x[:middle_length], cities_by_x[middle_length:]
+def split(cities):
+    x_sort = sorted(cities, key=lambda city: city.x)
+    y_sort = sorted(cities, key=lambda city: city.y)
+    mid = len(x_sort) // 2
+    if abs(x_sort[0].x - x_sort[-1].x) > abs(y_sort[0].y - y_sort[-1].y):
+        return x_sort[:mid], x_sort[mid:]
     else:
-        return cities_by_y[:middle_length], cities_by_y[middle_length:]
+        return y_sort[:mid], y_sort[mid:]
 
-def merge(graph_1, graph_2):
-    if isinstance(graph_1, City):
-        graph_2.append((graph_1, graph_2[0][0]))
-        graph_2.append((graph_1, graph_2[0][1]))
-        return graph_2
+def merge(subgraph_1, subgraph_2):
+    if isinstance(subgraph_1, City):
+        subgraph_2.append((subgraph_1, subgraph_2[0][0]))
+        subgraph_2.append((subgraph_1, subgraph_2[0][1]))
+        return subgraph_2
     min_cost = math.inf
-    for edge_1_index, (city_00, city_01) in enumerate(graph_1):
-        for edge_2_index, (city_10, city_11) in enumerate(graph_2):
-            cost = city_00.distance(city_10) + city_01.distance(city_11) - \
-                    city_00.distance(city_01) - city_01.distance(city_10)
-            cost2 = city_00.distance(city_11) + city_01.distance(city_10) - \
-                    city_00.distance(city_01) - city_01.distance(city_10)
+    for index_1, (city_00, city_01) in enumerate(subgraph_1):
+        for index_2, (city_10, city_11) in enumerate(subgraph_2):
+            cost = city_00.distance(city_10) + city_01.distance(city_11) - city_00.distance(city_01) - city_10.distance(city_11)
+            cost2 = city_00.distance(city_11) + city_01.distance(city_10) - city_00.distance(city_01) - city_10.distance(city_11)
             if cost < min_cost:
                 min_cost = cost
                 min_edge_1 = (city_00, city_10)
                 min_edge_2 = (city_01, city_11)
-                old_edge_1_index = edge_1_index
-                old_edge_2_index = edge_2_index
+                del_index_1 = index_1
+                del_index_2 = index_2
             if cost2 < min_cost:
                 min_cost = cost2
                 min_edge_1 = (city_00, city_11)
                 min_edge_2 = (city_01, city_10)
-                old_edge_1_index = edge_1_index
-                old_edge_2_index = edge_2_index
-    if len(graph_1) + len(graph_2) > 4:
-        del graph_1[old_edge_1_index]
-        del graph_2[old_edge_2_index]
-    elif len(graph_1) + len(graph_2) == 4:
-        del graph_2[old_edge_2_index]
-    graph_1.extend([min_edge_1, min_edge_2])
-    graph_1.extend(graph_2)
-    return graph_1
+                del_index_1 = index_1
+                del_index_2 = index_2
+    if len(subgraph_1) + len(subgraph_2) > 4:
+        del subgraph_1[del_index_1]
+        del subgraph_2[del_index_2]
+    elif len(subgraph_1) + len(subgraph_2) == 4:
+        del subgraph_2[del_index_2]
+    subgraph_1.extend([min_edge_1, min_edge_2])
+    subgraph_1.extend(subgraph_2)
+    return subgraph_1
 
 def solve(cities):
     if len(cities) < 1:
-            raise Exception('recursing on cities length < 0')
+        print("Empty graph")
     elif len(cities) == 1:
         return cities[0]
     elif len(cities) == 2:
         return [(cities[0], cities[1])]
     else:
-        half_1, half_2 = split_longer_dim(cities)
-        graph_1 = solve(half_1)
-        graph_2 = solve(half_2)
-        merged = merge(graph_1, graph_2)
+        half_1, half_2 = split(cities)
+        subgraph_1 = solve(half_1)
+        subgraph_2 = solve(half_2)
+        merged = merge(subgraph_1, subgraph_2)
         return merged
 
 
@@ -90,7 +87,7 @@ def display(cities, size):
 def main():
     runtime_dict = {}
     avg = 1
-    for size in range(3,12):
+    for size in range(11,12):
         runtime = 0
         cost_total = 0
         for iteration in range(0, avg):
@@ -104,10 +101,10 @@ def main():
             runtime += end - begin
             cost_total += path_cost
         runtime_dict[size] = str(runtime/avg) + "   " + str(cost_total/avg)
-    df = pd.DataFrame(runtime_dict.items()) 
-    writer = pd.ExcelWriter(f'output/dnc__runtime.xlsx')
-    df.to_excel(writer, f'dnc_runtime')
-    writer.save()
+    # df = pd.DataFrame(runtime_dict.items()) 
+    # writer = pd.ExcelWriter(f'output/dnc__runtime.xlsx')
+    # df.to_excel(writer, f'dnc_runtime')
+    # writer.save()
 
 if __name__ == "__main__":
     main()

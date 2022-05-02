@@ -15,16 +15,15 @@ def read_data(size):
 
 def solve(cities):
     distance_matrix = [[x.distance(y) for y in cities] for x in cities]
-    cities_a = {(frozenset([0, idx + 1]), idx + 1): (dist, [0, idx + 1]) for idx, dist in enumerate(distance_matrix[0][1:])}
-    print(cities_a)
+    route_matrix = {(frozenset([0, idx + 1]), idx + 1): (dist, [0, idx + 1]) for idx, dist in enumerate(distance_matrix[0][1:])}
     for m in range(2, len(cities)):
-        cities_b = {}
+        temp_matrix = {}
         for cities_set in [frozenset(C) | {0} for C in itertools.combinations(range(1, len(cities)), m)]:
             for j in cities_set - {0}:
-                cities_b[(cities_set, j)] = min([(cities_a[(cities_set - {j}, k)][0] + distance_matrix[k][j], 
-                cities_a[(cities_set - {j}, k)][1] + [j]) for k in cities_set if k != 0 and k != j])
-        cities_a = cities_b
-    res = min([(cities_a[d][0] + distance_matrix[0][d[1]], cities_a[d][1]) for d in iter(cities_a)])
+                temp_matrix[(cities_set, j)] = min([(route_matrix[(cities_set - {j}, k)][0] + distance_matrix[k][j], 
+                route_matrix[(cities_set - {j}, k)][1] + [j]) for k in cities_set if k != 0 and k != j])
+        route_matrix = temp_matrix  
+    res = min([(route_matrix[d][0] + distance_matrix[0][d[1]], route_matrix[d][1]) for d in iter(route_matrix)])
     route = [cities[i] for i in res[1]]
     return route
 
