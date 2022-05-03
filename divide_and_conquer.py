@@ -85,9 +85,9 @@ def display(cities, size):
 
 def main():
     runtime_dict = {}
-    avg = 5
-    sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 32, 64, 128, 256, 512, 1024, 2048]
-    # sizes = [32]
+    avg = 1
+    # sizes = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 32, 64, 128, 256, 512, 1024, 2048]
+    sizes = [16384]
     for size in sizes:
         runtime = 0
         cost_total = 0
